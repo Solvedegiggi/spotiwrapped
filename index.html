@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Visualize your Spotify streaming history with beautiful charts and statistics.">
+  <title>Spotify Wrapped</title>
+  <link rel="stylesheet" href="index.css?v=2.2">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='12' fill='%231DB954'/><path d='M16.5 15.5c-.2 0-.3-.1-.5-.2-2-1.2-4.5-1.5-7.4-.8-.3.1-.5-.1-.6-.4-.1-.3.1-.5.4-.6 3.2-.7 6-.4 8.2 1 .2.1.3.4.2.7-.1.2-.2.3-.3.3zm1.3-2.7c-.2 0-.4-.1-.5-.2-2.3-1.4-5.8-1.8-8.5-1-.3.1-.6-.1-.7-.4-.1-.3.1-.6.4-.7 3.1-.9 6.9-.5 9.5 1.1.3.2.4.5.2.8-.1.2-.3.4-.4.4zm.1-2.8c-2.7-1.6-7.2-1.8-9.8-.9-.4.1-.8-.1-.9-.5-.1-.4.1-.8.5-.9 3-.9 8-.7 11.1 1.1.4.2.5.7.3 1-.2.3-.5.4-.8.3-.1 0-.3-.1-.4-.1z' fill='white'/></svg>">
+</head>
+<body>
+
+  <!-- ========== UPLOAD SCREEN ========== -->
+  <div id="upload-screen">
+    <div class="upload-container">
+      <div class="upload-header">
+        <div class="upload-brand">
+          <div class="upload-logo">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="12" fill="#1DB954"/>
+              <path d="M16.5 15.5c-.2 0-.3-.1-.5-.2-2-1.2-4.5-1.5-7.4-.8-.3.1-.5-.1-.6-.4-.1-.3.1-.5.4-.6 3.2-.7 6-.4 8.2 1 .2.1.3.4.2.7-.1.2-.2.3-.3.3zm1.3-2.7c-.2 0-.4-.1-.5-.2-2.3-1.4-5.8-1.8-8.5-1-.3.1-.6-.1-.7-.4-.1-.3.1-.6.4-.7 3.1-.9 6.9-.5 9.5 1.1.3.2.4.5.2.8-.1.2-.3.4-.4.4zm.1-2.8c-2.7-1.6-7.2-1.8-9.8-.9-.4.1-.8-.1-.9-.5-.1-.4.1-.8.5-.9 3-.9 8-.7 11.1 1.1.4.2.5.7.3 1-.2.3-.5.4-.8.3-.1 0-.3-.1-.4-.1z" fill="white"/>
+            </svg>
+            <span class="upload-logo-text">Wrapped</span>
+          </div>
+        </div>
+        <div class="lang-toggle" id="upload-lang-toggle">
+          <button class="lang-btn" data-lang="it">IT</button>
+          <button class="lang-btn active" data-lang="en">EN</button>
+        </div>
+      </div>
+
+      <h1 class="upload-title" data-i18n="uploadTitle">Your Spotify Wrapped</h1>
+      <p class="upload-subtitle" data-i18n="uploadSubtitle">Upload your streaming history to explore your listening stats, top tracks, and more.</p>
+
+      <div class="drop-zone" id="drop-zone">
+        <input type="file" id="file-input" accept=".json,.zip">
+        <div class="drop-zone-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </div>
+        <p class="drop-zone-text" data-i18n="dropText">Drag & drop your JSON file here</p>
+        <p class="drop-zone-hint" data-i18n="dropHint">or click to browse</p>
+      </div>
+
+      <div class="upload-guide-trigger-wrap">
+        <button id="guide-open-btn" class="upload-guide-btn" type="button">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <span data-i18n="whereToFindData">Where do I find it?</span>
+        </button>
+      </div>
+
+      <div class="name-input-group">
+        <label data-i18n="nameLabel">YOUR NAME</label>
+        <!-- Dummy inputs to catch browser autofill -->
+        <input type="text" style="display:none" autocomplete="username">
+        <input type="password" style="display:none" autocomplete="new-password">
+        <input type="search" id="user-display-alias" autocomplete="one-time-code" data-i18n-placeholder="namePlaceholder" placeholder="Enter your name">
+      </div>
+
+      <div id="upload-error" class="error-message hidden"></div>
+    </div>
+  </div>
+
+  <!-- ========== GUIDE SCREEN ========== -->
+  <div id="guide-screen" class="hidden">
+    <div class="guide-container">
+      <div class="guide-header">
+        <button id="guide-back-btn" class="guide-back-btn" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+          <span data-i18n="guideBackBtn">Back to Upload</span>
+        </button>
+        <div class="lang-toggle" id="guide-lang-toggle">
+          <button class="lang-btn" data-lang="it">IT</button>
+          <button class="lang-btn active" data-lang="en">EN</button>
+        </div>
+      </div>
+
+      <div class="guide-hero">
+        <h1 class="guide-title" data-i18n="guideTitle">How to Download Your Spotify Data</h1>
+        <p class="guide-subtitle" data-i18n="guideSubtitle">Follow this step-by-step guide to get your complete lifetime streaming history from Spotify.</p>
+      </div>
+
+      <div class="guide-steps">
+        <!-- Step 1 -->
+        <div class="guide-step-card">
+          <div class="guide-step-number">1</div>
+          <div class="guide-step-content">
+            <h3 class="guide-step-title" data-i18n="guideStep1Title">1. Open Spotify Privacy Settings</h3>
+            <p class="guide-step-desc" data-i18n="guideStep1Desc">Log into your Spotify account in your browser and visit the Account Privacy page.</p>
+            <a href="https://www.spotify.com/account/privacy/" target="_blank" rel="noopener noreferrer" class="guide-external-link">
+              <span data-i18n="guideStep1Btn">Open Spotify Privacy Page</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="guide-step-card">
+          <div class="guide-step-number">2</div>
+          <div class="guide-step-content">
+            <h3 class="guide-step-title" data-i18n="guideStep2Title">2. Request Extended Streaming History</h3>
+            <p class="guide-step-desc" data-i18n-html="guideStep2Desc">Scroll down to the 'Download your data' section. Make sure to check the box for <strong>Extended streaming history</strong>. Then click <strong>Request data</strong>.</p>
+            <div class="guide-step-note">
+              <span class="guide-note-icon">⚠️</span>
+              <span data-i18n-html="guideStep2Tip">Important: Do not select only 'Account data' (it only covers the last 1 year). Be sure to select <strong>Extended streaming history</strong> for your full lifetime history!</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="guide-step-card">
+          <div class="guide-step-number">3</div>
+          <div class="guide-step-content">
+            <h3 class="guide-step-title" data-i18n="guideStep3Title">3. Confirm the Request via Email</h3>
+            <p class="guide-step-desc" data-i18n-html="guideStep3Desc">Spotify will send a confirmation email with a link. Open it and click <strong>Confirm</strong> to start processing.</p>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="guide-step-card">
+          <div class="guide-step-number">4</div>
+          <div class="guide-step-content">
+            <h3 class="guide-step-title" data-i18n="guideStep4Title">4. Wait for Spotify to Prepare Your Files</h3>
+            <p class="guide-step-desc" data-i18n-html="guideStep4Desc">Spotify compiles your data over several days (usually between <strong>2 to 5 days</strong>, up to 30 days). You'll receive an email as soon as it's ready.</p>
+          </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="guide-step-card highlight">
+          <div class="guide-step-number">5</div>
+          <div class="guide-step-content">
+            <h3 class="guide-step-title" data-i18n="guideStep5Title">5. Download & Drop It Here!</h3>
+            <p class="guide-step-desc" data-i18n-html="guideStep5Desc">Download the ZIP file from the email. You can drag and drop the entire ZIP file directly onto the upload screen—<strong>no unzipping needed</strong>!</p>
+            <button id="guide-cta-back-btn" class="guide-cta-btn" type="button">
+              <span data-i18n="guideCtaReady">I have my file ready →</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== LOADING OVERLAY ========== -->
+  <div id="loading-overlay" class="hidden">
+    <div class="spinner"></div>
+    <p data-i18n="loadingText">Processing your streaming history...</p>
+  </div>
+
+  <!-- ========== DASHBOARD ========== -->
+  <div id="dashboard" class="hidden">
+    <header class="dashboard-header">
+      <div class="header-top-row">
+        <button class="change-history-btn" id="change-history-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          <span data-i18n="changeHistory">Change history</span>
+        </button>
+        <div class="title-container">
+          <h1 class="dashboard-title" id="dashboard-title"></h1>
+          <div class="dashboard-last-update hidden" id="dashboard-last-update"></div>
+        </div>
+        <div class="lang-toggle" id="dashboard-lang-toggle">
+          <button class="lang-btn" data-lang="it">IT</button>
+          <button class="lang-btn active" data-lang="en">EN</button>
+        </div>
+      </div>
+      <div class="stats-bar" id="global-stats-bar"></div>
+    </header>
+
+    <nav class="view-tabs" id="view-tabs">
+      <button class="tab-btn" data-view="total" data-i18n="tabTotal">Total</button>
+      <button class="tab-btn active" data-view="byYear" data-i18n="tabByYear">By Year</button>
+      <button class="tab-btn" data-view="recap" data-i18n="tabRecap">Recap</button>
+      <button class="tab-btn" data-view="stats" data-i18n="tabStats">Stats</button>
+      <button class="tab-btn" data-view="search" data-i18n="tabSearch">Search</button>
+    </nav>
+
+    <main id="content"></main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="app.js?v=2.2" charset="UTF-8"></script>
+</body>
+</html>
